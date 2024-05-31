@@ -1,3 +1,4 @@
+// TODO: improve error handling
 package server
 
 import (
@@ -5,7 +6,7 @@ import (
 	"net/http"
 
 	Flag "github.com/imattferreira/flag-control/src/entities/flag"
-	"github.com/imattferreira/flag-control/src/tools"
+	"github.com/imattferreira/flag-control/src/json"
 )
 
 var flags []*Flag.Flag
@@ -21,14 +22,16 @@ func getFlags(w http.ResponseWriter, r *http.Request) {
 		expelled = append(expelled, flag.Expel())
 	}
 
-	body, err := tools.Encode(expelled)
+	body, err := json.Encode(expelled)
 
 	if err != nil {
 		internalErr(w)
 		return
 	}
 
-	tools.JsonResponse(w, body)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(body)
 }
 
 func createFlag(w http.ResponseWriter, r *http.Request) {
@@ -39,7 +42,9 @@ func createFlag(w http.ResponseWriter, r *http.Request) {
 	}
 
 	flags = append(flags, flag)
-	encoded, _ := tools.Encode(flag.Expel())
+	encoded, _ := json.Encode(flag.Expel())
 
-	tools.JsonResponse(w, encoded)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	w.Write(encoded)
 }

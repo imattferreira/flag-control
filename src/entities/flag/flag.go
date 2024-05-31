@@ -3,7 +3,7 @@ package Flag
 import (
 	"io"
 
-	"github.com/imattferreira/flag-control/src/tools"
+	"github.com/imattferreira/flag-control/src/json"
 )
 
 type Flag struct {
@@ -23,7 +23,7 @@ func Receive(body io.ReadCloser) (*Flag, error) {
 		Name string `json:"name"`
 	}
 
-	err := tools.Decode(body, &parsed)
+	err := json.Decode(body, &parsed)
 
 	if err != nil {
 		return nil, err
