@@ -10,23 +10,23 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/imattferreira/flag-control/src/entities"
+	Flag "github.com/imattferreira/flag-control/src/entities/flag"
 	"github.com/imattferreira/flag-control/src/tools"
 )
 
-var flags []*entities.Flag
+var flags []*Flag.Flag
 
-func getFlags() []*entities.Flag {
+func getFlags() []*Flag.Flag {
 	for i := 0; i < 5; i++ {
 
-		flags = append(flags, entities.NewFlag(i, fmt.Sprintf("Flag: %d", i)))
+		flags = append(flags, Flag.NewFlag(i, fmt.Sprintf("Flag: %d", i)))
 	}
 
 	return flags
 }
 
-func createFlag(r *http.Request) (*entities.Flag, error) {
-	flag, err := entities.Receive(r.Body)
+func createFlag(r *http.Request) (*Flag.Flag, error) {
+	flag, err := Flag.Receive(r.Body)
 
 	if err != nil {
 		return nil, err
