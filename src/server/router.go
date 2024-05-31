@@ -1,3 +1,9 @@
+/*
+*
+TODO:
+  - improve error handling
+  - improve route handling
+*/
 package server
 
 import (
@@ -8,9 +14,9 @@ import (
 	"github.com/imattferreira/flag-control/src/tools"
 )
 
-func getFlags() []*entities.Flag {
-	var flags []*entities.Flag
+var flags []*entities.Flag
 
+func getFlags() []*entities.Flag {
 	for i := 0; i < 5; i++ {
 
 		flags = append(flags, entities.NewFlag(i, fmt.Sprintf("Flag: %d", i)))
@@ -19,13 +25,16 @@ func getFlags() []*entities.Flag {
 	return flags
 }
 
-func createFlag(r *http.Request) {
-	// flag, _ := decode[Flag](r)
-	// json, _ := encode(flag)
+func createFlag(r *http.Request) (*entities.Flag, error) {
+	flag, err := entities.Receive(r.Body)
 
-	// fmt.Printf(string(json))
+	if err != nil {
+		return nil, err
+	}
 
-	// return flag
+	flags = append(flags, flag)
+
+	return flag, nil
 }
 
 func notFound(w http.ResponseWriter) {
@@ -60,7 +69,16 @@ func Router(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if path == "/flags" && method == "POST" {
-		createFlag(r)
+		body, _ := createFlag(r)
+
+		// if err != nil {
+		// 	internalErr(w)
+		// 	return
+		// }
+
+		encoded, _ := tools.Encode(body.Expel())
+
+		tools.JsonResponse(w, encoded)
 		return
 	}
 

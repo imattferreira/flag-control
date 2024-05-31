@@ -10,8 +10,8 @@ func Encode(data any) ([]byte, error) {
 	return json.Marshal(data)
 }
 
-func Decode(b io.ReadCloser, d *map[string]string) error {
-	return json.NewDecoder(b).Decode(&d)
+func Decode(b io.ReadCloser, v interface{}) error {
+	return json.NewDecoder(b).Decode(v)
 }
 
 func JsonResponse(w http.ResponseWriter, data []byte) {

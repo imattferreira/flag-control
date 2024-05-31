@@ -18,16 +18,18 @@ func NewFlag(id int, name string) *Flag {
 	}
 }
 
-func Receive(body *io.ReadCloser) (*Flag, error) {
-	var data map[string]string
+func Receive(body io.ReadCloser) (*Flag, error) {
+	var parsed struct {
+		Name string `json:"name"`
+	}
 
-	err := tools.Decode(*body, &data)
+	err := tools.Decode(body, &parsed)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return NewFlag(10, data["name"]), nil
+	return NewFlag(10, parsed.Name), nil
 }
 
 func (flag *Flag) Expel() map[string]interface{} {
@@ -37,4 +39,8 @@ func (flag *Flag) Expel() map[string]interface{} {
 	expelled["name"] = flag.name
 
 	return expelled
+}
+
+func (flag *Flag) GetName() string {
+	return flag.name
 }
