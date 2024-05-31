@@ -9,7 +9,8 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/", server.Router)
+	server.Register()
+	http.HandleFunc("/", server.Handler)
 
 	err := http.ListenAndServe(":8080", nil)
 	fmt.Println("🚀 Server running at: http://localhost:8080/")
