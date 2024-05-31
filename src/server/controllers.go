@@ -1,4 +1,3 @@
-// TODO: improve error handling
 package server
 
 import (
@@ -42,7 +41,11 @@ func createFlag(w http.ResponseWriter, r *http.Request) {
 	}
 
 	flags = append(flags, flag)
-	encoded, _ := json.Encode(flag.Expel())
+	encoded, eerr := json.Encode(flag.Expel())
+
+	if eerr != nil {
+		internalErr(w)
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
