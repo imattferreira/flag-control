@@ -35,6 +35,8 @@ func Register() {
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
+	handleCors(&w)
+
 	for _, route := range routes {
 		if route.Path == r.URL.Path && route.Method == HttpMethods(r.Method) {
 			route.Handler(w, r)
